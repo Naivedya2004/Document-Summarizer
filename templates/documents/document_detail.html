@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ document.title }} - DocAnalyzer{% endblock %}
+
+{% block content %}
+<div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-start mb-6">
+            <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">{{ document.title }}</h1>
+            <div class="flex space-x-3">
+                <a href="{% url 'documents:document_list' %}" 
+                   class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                    Back to List
+                </a>
+                <a href="{% url 'documents:document_delete' document.pk %}" 
+                   class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md shadow-sm">
+                    Delete
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 mb-8">
+            <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">File Type</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ document.file_type }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Uploaded At</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ document.uploaded_at|date:"F j, Y, g:i a" }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">File Size</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ document.file.size|filesizeformat }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
+                    <dd class="mt-1 text-sm">
+                        {% if document.is_processed %}
+                        <span class="px-2 py-1 text-sm rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                            Processed
+                        </span>
+                        {% else %}
+                        <span class="px-2 py-1 text-sm rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                            Processing
+                        </span>
+                        {% endif %}
+                    </dd>
+                </div>
+            </dl>
+        </div>
+
+        {% if document.chunks.exists %}
+        <div class="space-y-6">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-white">Document Content</h2>
+            {% for chunk in document.chunks.all %}
+            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                <p class="text-gray-600 dark:text-gray-300">{{ chunk.content }}</p>
+                <div class="mt-2 flex justify-between items-center text-sm">
+                    <span class="text-gray-500 dark:text-gray-400">Chunk {{ forloop.counter }}</span>
+                    {% if chunk.embedding %}
+                    <span class="text-green-600 dark:text-green-400">Vectorized</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-300">Processing Document</h3>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Please wait while we process and analyze your document.
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

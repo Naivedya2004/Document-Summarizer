@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Document - DocAnalyzer{% endblock %}
+
+{% block content %}
+<div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white mb-8 text-center">Delete Document</h1>
+        
+        <div class="bg-red-50 dark:bg-red-900 p-6 rounded-lg mb-6">
+            <div class="flex items-center mb-4">
+                <svg class="h-6 w-6 text-red-600 dark:text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <h2 class="text-lg font-medium text-red-800 dark:text-red-200">Confirm Deletion</h2>
+            </div>
+            
+            <p class="text-red-700 dark:text-red-300 mb-4">
+                Are you sure you want to delete the document "{{ document.title }}"? This action cannot be undone.
+            </p>
+            
+            <form method="POST" class="flex justify-end space-x-4">
+                {% csrf_token %}
+                <a href="{% url 'documents:document_list' %}" 
+                   class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                    Cancel
+                </a>
+                <button type="submit" 
+                        class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    Delete
+                </button>
+            </form>
+        </div>
+        
+        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Document Details</h3>
+            <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Title</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ document.title }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Uploaded</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ document.uploaded_at|date:"M d, Y" }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">File Type</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ document.file_type }}</dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+</div>
+{% endblock %} 

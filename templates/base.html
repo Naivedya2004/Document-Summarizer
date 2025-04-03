@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DocAnalyzer{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#faf5ff',
+                            100: '#f3e8ff',
+                            200: '#e9d5ff',
+                            300: '#d8b4fe',
+                            400: '#c084fc',
+                            500: '#a855f7',
+                            600: '#9333ea',
+                            700: '#7e22ce',
+                            800: '#6b21a8',
+                            900: '#581c87',
+                            950: '#3b0764',
+                        },
+                        secondary: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                            950: '#4a044e',
+                        },
+                    },
+                    boxShadow: {
+                        'soft': '0 0 20px rgba(168, 85, 247, 0.1)',
+                        'glow': '0 0 20px rgba(168, 85, 247, 0.4)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+        }
+        .dark .glass {
+            background: rgba(30, 20, 40, 0.7);
+        }
+    </style>
+</head>
+<body class="h-full font-sans antialiased" x-data="{ darkMode: false, mobileMenuOpen: false }" :class="{ 'dark': darkMode }">
+    <div class="min-h-full">
+        <nav class="glass border-b border-purple-200/50 dark:border-purple-800/50 sticky top-0 z-50">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="flex h-16 justify-between">
+                    <div class="flex">
+                        <div class="flex flex-shrink-0 items-center">
+                            <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">DocAnalyzer</span>
+                        </div>
+                        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                            <a href="{% url 'documents:document_list' %}" 
+                               class="inline-flex items-center px-1 pt-1 text-sm font-medium transition-all duration-200 {% if request.resolver_match.app_name == 'documents' %}text-purple-600 dark:text-purple-400 border-b-2 border-purple-500{% else %}text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 border-b-2 border-transparent hover:border-purple-500{% endif %}">
+                                <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                Documents
+                            </a>
+                            <a href="{% url 'search:search' %}"
+                               class="inline-flex items-center px-1 pt-1 text-sm font-medium transition-all duration-200 {% if request.resolver_match.app_name == 'search' %}text-purple-600 dark:text-purple-400 border-b-2 border-purple-500{% else %}text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 border-b-2 border-transparent hover:border-purple-500{% endif %}">
+                                <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                                Search
+                            </a>
+                            <a href="{% url 'qa:qa' %}"
+                               class="inline-flex items-center px-1 pt-1 text-sm font-medium transition-all duration-200 {% if request.resolver_match.app_name == 'qa' %}text-purple-600 dark:text-purple-400 border-b-2 border-purple-500{% else %}text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 border-b-2 border-transparent hover:border-purple-500{% endif %}">
+                                <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-4l-4 4z"/>
+                                </svg>
+                                Q&A
+                            </a>
+                        </div>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+                        <button @click="darkMode = !darkMode" 
+                                class="rounded-lg p-2 text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200">
+                            <svg x-show="!darkMode" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                            </svg>
+                            <svg x-show="darkMode" x-cloak class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                        </button>
+                        <div class="relative">
+                            <button class="flex rounded-full bg-purple-100 dark:bg-purple-900 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <span class="sr-only">Open user menu</span>
+                                <div class="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-medium">
+                                    {{ request.user.username|make_list|first|upper }}
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="-mr-2 flex items-center sm:hidden">
+                        <button @click="mobileMenuOpen = !mobileMenuOpen"
+                                class="inline-flex items-center justify-center rounded-md p-2 text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sm:hidden" x-show="mobileMenuOpen" x-cloak 
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 -translate-y-1"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 -translate-y-1">
+                <div class="space-y-1 pb-3 pt-2">
+                    <a href="{% url 'documents:document_list' %}" 
+                       class="flex items-center py-2 pl-3 pr-4 text-base font-medium transition-all duration-200 {% if request.resolver_match.app_name == 'documents' %}text-purple-600 dark:text-purple-400 bg-purple-50/50 dark:bg-purple-900/50 border-l-4 border-purple-500{% else %}text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-purple-900/50 hover:text-purple-600 dark:hover:text-purple-400 border-l-4 border-transparent{% endif %}">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Documents
+                    </a>
+                    <a href="{% url 'search:search' %}"
+                       class="flex items-center py-2 pl-3 pr-4 text-base font-medium transition-all duration-200 {% if request.resolver_match.app_name == 'search' %}text-purple-600 dark:text-purple-400 bg-purple-50/50 dark:bg-purple-900/50 border-l-4 border-purple-500{% else %}text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-purple-900/50 hover:text-purple-600 dark:hover:text-purple-400 border-l-4 border-transparent{% endif %}">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        Search
+                    </a>
+                    <a href="{% url 'qa:qa' %}"
+                       class="flex items-center py-2 pl-3 pr-4 text-base font-medium transition-all duration-200 {% if request.resolver_match.app_name == 'qa' %}text-purple-600 dark:text-purple-400 bg-purple-50/50 dark:bg-purple-900/50 border-l-4 border-purple-500{% else %}text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-purple-900/50 hover:text-purple-600 dark:hover:text-purple-400 border-l-4 border-transparent{% endif %}">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-4l-4 4z"/>
+                        </svg>
+                        Q&A
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="py-10">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+</body>
+</html> 
